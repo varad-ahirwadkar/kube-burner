@@ -5,25 +5,34 @@
 KIND_VERSION=${KIND_VERSION:-v0.19.0}
 K8S_VERSION=${K8S_VERSION:-v1.27.0}
 OCI_BIN=${OCI_BIN:-podman}
+ARCH=$(uname -m)
 
 setup-kind() {
   KIND_FOLDER=$(mktemp -d)
   echo "Downloading kind"
-  curl -LsS https://github.com/kubernetes-sigs/kind/releases/download/"${KIND_VERSION}"/kind-linux-amd64 -o ${KIND_FOLDER}/kind-linux-amd64
-  chmod +x ${KIND_FOLDER}/kind-linux-amd64
-  echo "Deploying cluster"
-  ${KIND_FOLDER}/kind-linux-amd64 create cluster --config kind.yml --image kindest/node:"${K8S_VERSION}" --name kind --wait 300s -v=1
+  if [[ "$ARCH" == "ppc64le" ]]
+  then
+    git clone https://github.com/kubernetes-sigs/kind.git
+    make -C kind/ install INSTALL_DIR="${KIND_FOLDER}" KIND_BINARY_NAME="kind-linux-${ARCH}"
+    echo "Deploying cluster"
+    "${KIND_FOLDER}/kind-linux-${ARCH}" create cluster --config kind.yml --image quay.io/kviswana/kind-node:"${K8S_VERSION}" --name kind --wait 300s -v=1
+  else
+    curl -LsS https://github.com/kubernetes-sigs/kind/releases/download/"${KIND_VERSION}/kind-linux-${ARCH}" -o ${KIND_FOLDER}/kind-linux-${ARCH}
+    chmod +x ${KIND_FOLDER}/kind-linux-${ARCH}
+    echo "Deploying cluster"
+    "${KIND_FOLDER}/kind-linux-${ARCH}" create cluster --config kind.yml --image kindest/node:"${K8S_VERSION}" --name kind --wait 300s -v=1
+  fi
 }
 
 create_test_kubeconfig() {
   echo "Creating another kubeconfig"
-  "${KIND_FOLDER}"/kind-linux-amd64 export kubeconfig --kubeconfig "${TEST_KUBECONFIG}"
+  "${KIND_FOLDER}/kind-linux-${ARCH}" export kubeconfig --kubeconfig "${TEST_KUBECONFIG}"
   kubectl config rename-context kind-kind "${TEST_KUBECONTEXT}" --kubeconfig "${TEST_KUBECONFIG}"
 }
 
 destroy-kind() {
   echo "Destroying kind server"
-  "${KIND_FOLDER}"/kind-linux-amd64 delete cluster
+  "${KIND_FOLDER}/kind-linux-${ARCH}" delete cluster
 }
 
 setup-prometheus() {

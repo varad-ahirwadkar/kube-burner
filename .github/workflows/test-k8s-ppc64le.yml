@@ -1,0 +1,40 @@
+name: Execute tests on OCP Power
+on:
+  workflow_dispatch:
+
+env:
+  K8S_VERSION: "v1.30.2"
+  KUBE_BURNER_VERSION: "1.9.8"
+
+jobs:
+  ocp-e2e-ci:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout the kube-burner repository
+      uses: actions/checkout@v2
+
+    - name: Install the dependencies 
+      run: yum install git podman make wget -y
+
+    - name: Download kubectl binary
+      run: |
+        wget https://dl.k8s.io/${K8S_VERSION}/bin/linux/ppc64le/kubectl -O /tmp/kubectl
+        chmod +x /tmp/kubectl
+
+    - name: Download kube-burner binary
+      run: |
+        wget https://github.com/kube-burner/kube-burner/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-V${KUBE_BURNER_VERSION}-linux-ppc64le.tar.gz
+        tar xvf kube-burner-V${KUBE_BURNER_VERSION}-linux-ppc64le.tar.gz -C /tmp kube-burner
+
+    - name: Execute Tests
+      run: |
+        export PATH=${PATH}:/tmp/
+        make test-k8s
+      env:
+        TERM: linux
+
+    - name: Clean up 
+      run: |
+        rm -rf ${{ github.workspace }}/*
+        rm -rf /tmp/tmp*
