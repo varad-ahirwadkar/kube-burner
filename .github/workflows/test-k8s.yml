@@ -1,4 +1,3 @@
-# test-k8s.yml
 name: Execute tests on k8s and OCP
 on:
   workflow_dispatch:
