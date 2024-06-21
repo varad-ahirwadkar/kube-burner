@@ -1,14 +1,8 @@
 # test-k8s.yml
 name: Execute tests on k8s and OCP
 on:
+  workflow_dispatch:
   workflow_call:
-    secrets:
-      OPENSHIFT_SERVER:
-        required: true
-      OPENSHIFT_USER:
-        required: true
-      OPENSHIFT_PASSWORD:
-        required: true
 jobs:
   test-k8s:
     runs-on: ubuntu-latest
