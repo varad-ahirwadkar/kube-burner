@@ -1,0 +1,16 @@
+name: Execute tests on new Hosted
+on:
+  workflow_dispatch:
+
+env:
+  K8S_VERSION: "v1.30.2"
+  KUBE_BURNER_VERSION: "1.9.8"
+
+jobs:
+  python-action-test:
+    runs-on: ubuntu-22-ppc64le
+    steps:
+    - name: Checkout the kube-burner repository
+      uses: actions/checkout@v2
+
+    - run: uname -i
