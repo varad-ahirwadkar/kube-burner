@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install the dependencies 
-      run: yum install git podman make wget -y
+      run: sudo yum install git podman make wget -y
 
     - name: Download kubectl binary
       run: |
