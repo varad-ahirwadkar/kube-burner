@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout the kube-burner repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install the dependencies 
       run: yum install git podman make wget -y
