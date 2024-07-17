@@ -5,6 +5,7 @@ on:
 env:
   K8S_VERSION: "v1.30.2"
   KUBE_BURNER_VERSION: "1.9.8"
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   ocp-e2e-ci:
