@@ -28,6 +28,12 @@ jobs:
         wget https://github.com/kube-burner/kube-burner/releases/download/v${KUBE_BURNER_VERSION}/kube-burner-V${KUBE_BURNER_VERSION}-linux-ppc64le.tar.gz
         tar xvf kube-burner-V${KUBE_BURNER_VERSION}-linux-ppc64le.tar.gz -C /tmp kube-burner
 
+    - name: Installing Bats from source
+      run: |
+        git clone https://github.com/bats-core/bats-core.git
+        cd bats-core
+        ./install.sh /usr/local
+  
     - name: Execute Tests
       run: |
         export PATH=${PATH}:/tmp/
