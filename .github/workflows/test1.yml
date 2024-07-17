@@ -11,3 +11,4 @@ jobs:
     runs-on: self-hosted
     steps:
     - run: uname -i
+    - uses: actions/checkout@v4
