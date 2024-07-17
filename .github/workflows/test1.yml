@@ -8,9 +8,6 @@ env:
 
 jobs:
   python-action-test:
-    runs-on: ubuntu-22-ppc64le
+    runs-on: self-hosted
     steps:
-    - name: Checkout the kube-burner repository
-      uses: actions/checkout@v2
-
     - run: uname -i
